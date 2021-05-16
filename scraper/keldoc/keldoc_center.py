@@ -42,9 +42,6 @@ class KeldocCenter:
             try:
                 cabinet_req = self.client.get(cabinet_url)
                 cabinet_req.raise_for_status()
-            except httpx.TimeoutException as hex:
-                logger.warning(f"Keldoc request timed out for center: {self.base_url} (vaccine cabinets)")
-                continue
             except httpx.HTTPStatusError as hex:
                 logger.warning(
                     f"Keldoc request returned error {hex.response.status_code} "
@@ -64,9 +61,6 @@ class KeldocCenter:
         try:
             resource = self.client.get(API_KELDOC_CENTER, params=self.resource_params)
             resource.raise_for_status()
-        except httpx.TimeoutException as hex:
-            logger.warning(f"Keldoc request timed out for center: {self.base_url} (center info)")
-            return False
         except httpx.HTTPStatusError as hex:
             logger.warning(
                 f"Keldoc request returned error {hex.response.status_code} "
@@ -87,9 +81,6 @@ class KeldocCenter:
         try:
             rq = self.client.get(self.base_url)
             rq.raise_for_status()
-        except httpx.TimeoutException as hex:
-            logger.warning(f"Keldoc request timed out for center: {self.base_url} (resource)")
-            return False
         except httpx.HTTPStatusError as hex:
             logger.warning(
                 f"Keldoc request returned error {hex.response.status_code} " f"for center: {self.base_url} (resource)"
@@ -141,7 +132,7 @@ class KeldocCenter:
                 f" celendar_url: {calendar_url}"
                 f" calendar_params: {calendar_params}"
             )
-            return None
+            raise hex
         except httpx.HTTPStatusError as hex:
             logger.warning(
                 f"Keldoc request returned error {hex.response.status_code} "
