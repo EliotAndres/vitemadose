@@ -23,6 +23,9 @@ from scraper.profiler import Profiling
 from utils.vmd_config import get_conf_platform
 from utils.vmd_utils import append_date_days
 
+MAX_DISTANCE_KM = 12
+USER_LATITUDE = 48.86374737349852
+USER_LONGITUDE = 2.351147457097312
 
 DOCTOLIB_CONF = DoctolibConf(**get_conf_platform("doctolib"))
 
@@ -658,7 +661,7 @@ def center_iterator() -> Iterator[Dict]:
 
             lat2 = math.radians(center_lat)
             lon2 = math.radians(center_long)
-            user_position =  [48.86374737349852, 2.351147457097312]
+            user_position = [USER_LATITUDE, USER_LONGITUDE]
             user_lat = math.radians(user_position[0])
             user_long = math.radians(user_position[1])
 
@@ -669,7 +672,7 @@ def center_iterator() -> Iterator[Dict]:
             distance = R * c
 
             # print(center['nom'])
-            if distance < 12 and 'centre' in center['nom'].lower():
+            if distance < MAX_DISTANCE_KM and 'centre' in center['nom'].lower():
                 yield center
     except Exception as e:
         logger.warning(f"Unable to scrape doctolib centers: {e}")
