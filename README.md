@@ -1,3 +1,25 @@
+## About the fork
+
+This is a quick and dirty fork, allowing you to set a position (lat, long) and a radius in km. It will then scrappe the 
+vaccine centers, trying to find an appointment in the next 2 days. It works for Doctolib only. Please don't overruse the tool.
+
+To install, ensure your have `make` and Pyton installed, then run:
+
+```bash
+make install
+```
+
+Edit `scraper/doctolib/doctolib.py`. Change the `MAX_DISTANCE_KM`, `USER_LATITUDE`, `USER_LONGITUDE` variables (use Google Maps to find your lat/lng), then run the scrapper once:
+
+```bash
+POOL_SIZE=1 make scrape
+```
+It'll output links to centers. Click on them to attempt to find an appointment. Most of the time, the data is outdated, but you might get lucky.
+
+
+
+## Original README
+
 <a href="https://covidtracker.fr/vitemadose"><img src="./.github/assets/logo.png" width="150" alt="Vite Ma Dose !" /></a>
 
 [Vite Ma Dose !](https://covidtracker.fr/vitemadose) est un outil open source de [CovidTracker](https://covidtracker.fr) permettant de détecter les rendez-vous disponibles dans votre département afin de vous faire vacciner (sous réserve d'éligibilité).
