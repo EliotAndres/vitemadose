@@ -119,8 +119,22 @@ class CenterInfo:
             # Invalid date
             return
         # Too far
-        if date - datetime.now(tz=timezone) > timedelta(days=50):
+        if date - datetime.now(tz=timezone) > timedelta(days=3):
             self.prochain_rdv = None
+
+    def has_next_availability(self):
+        if not self.prochain_rdv:
+            return False
+        timezone = pytz.timezone("Europe/Paris")
+        try:
+            date = pytz.utc.localize(datetime.fromisoformat(self.prochain_rdv.split('T')[0]))
+        except (TypeError, ValueError):
+            print('invalid date')
+            # Invalid date
+            return False
+        # Too far
+        if date - datetime.now(tz=timezone) < timedelta(days=1):
+            return True
 
     def default(self):
         if type(self.location) is CenterLocation:

@@ -7,6 +7,7 @@
     "vaccine_type": [
       "Pfizer-BioNTech"
     ],
+    "com_cp": "62800",
     "com_insee": "62510",
     "address": "Rue Montgolfier 62800 Li\u00e9vin",
     "long_coor1": 2.77876,
@@ -30,6 +31,7 @@
     "vaccine_type": [
       "Pfizer-BioNTech"
     ],
+    "com_cp": "72300",
     "com_insee": "72336",
     "address": "rue Th\u00e9ophile Pl\u00e9  72300 SABLE SUR SARTHE",
     "long_coor1": 0.3325081,

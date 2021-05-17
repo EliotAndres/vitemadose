@@ -1,6 +1,7 @@
 import json
 import time
 import logging
+import math
 import os
 import re
 from datetime import timedelta, datetime
@@ -375,8 +376,10 @@ class DoctolibSlots:
 
         if not first_availability and not slots.get("next_slot", None):
             stop = True
+        # if first_availability and '2021-05-17' in slots_api_url:
+            # print(slots_api_url)
         return first_availability, appointment_count, appointment_schedules, stop, slots.get("next_slot")
-
+#
 
 def set_doctolib_center_internal_id(
     request: ScraperRequest, data: dict, practice_ids: Optional[List[int]], practice_same_adress: bool
@@ -634,15 +637,39 @@ def center_iterator() -> Iterator[Dict]:
         return
     try:
         center_path = "data/output/doctolib-centers.json"
-        url = f"https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/data-auto/{center_path}"
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-        file = open(center_path, "w")
-        file.write(json.dumps(data, indent=2))
-        file.close()
+        # url = f"https://raw.githubusercontent.com/CovidTrackerFr/vitemadose/data-auto/{center_path}"
+        # response = requests.get(url)
+        # response.raise_for_status()
+        # data = response.json()
+        # file = open(center_path, "w")
+        # file.write(json.dumps(data, indent=2))
+        # file.close()/
+        with open(center_path, 'r') as f:
+            data = json.load(f)
         logger.info(f"Found {len(data)} Doctolib centers (external scraper).")
         for center in data:
-            yield center
+            if center["lat_coor1"] is None or center["long_coor1"] is None:
+                continue
+
+            center_lat = float(center["lat_coor1"])
+            center_long = float(center["long_coor1"])
+
+            R = 6373.0
+
+            lat2 = math.radians(center_lat)
+            lon2 = math.radians(center_long)
+            user_position =  [48.86374737349852, 2.351147457097312]
+            user_lat = math.radians(user_position[0])
+            user_long = math.radians(user_position[1])
+
+            dlon = lon2 - user_long
+            dlat = lat2 - user_lat
+            a = math.sin(dlat / 2) ** 2 + math.cos(user_lat) * math.cos(user_long) * math.sin(dlon / 2) ** 2
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+            distance = R * c
+
+            # print(center['nom'])
+            if distance < 12 and 'centre' in center['nom'].lower():
+                yield center
     except Exception as e:
         logger.warning(f"Unable to scrape doctolib centers: {e}")
